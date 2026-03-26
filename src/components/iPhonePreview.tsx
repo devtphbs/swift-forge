@@ -169,12 +169,16 @@ export default function iPhonePreview({ files, isDarkMode }: iPhonePreviewProps)
       {/* iPhone Frame */}
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="relative">
-          {/* iPhone 16 Pro Frame with Dynamic Island */}
+          {/* iPhone 15 Pro Frame with Dynamic Island */}
           <div className="w-80 h-[680px] bg-black rounded-[40px] p-2 shadow-2xl">
             <div className="w-full h-full bg-white dark:bg-black rounded-[32px] overflow-hidden relative">
-              {/* Dynamic Island - replacing notch */}
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-8 bg-black rounded-full z-10 flex items-center justify-center">
-                <div className="w-20 h-6 bg-gray-900 rounded-full"></div>
+              {/* Dynamic Island - realistic pill shape */}
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-36 h-8 bg-black rounded-full z-10 flex items-center justify-center shadow-lg">
+                <div className="flex items-center gap-1">
+                  <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                  <div className="w-16 h-5 bg-gray-900 rounded-full"></div>
+                  <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                </div>
               </div>
               
               {/* Screen Content */}
@@ -210,8 +214,8 @@ export default function iPhonePreview({ files, isDarkMode }: iPhonePreviewProps)
       {/* Preview Info */}
       <div className="p-3 border-t border-gray-800">
         <div className="text-xs text-gray-400 text-center">
-          <p>iPhone 16 Pro Simulator</p>
-          <p className="mt-1">iOS 26.0 • SwiftUI Preview • {showDynamicIsland ? 'Dynamic Island ON' : 'Dynamic Island OFF'}</p>
+          <p>iPhone 15 Pro Simulator</p>
+          <p className="mt-1">iOS 17.2 • SwiftUI Preview • {showDynamicIsland ? 'Dynamic Island ON' : 'Dynamic Island OFF'}</p>
         </div>
       </div>
     </div>
