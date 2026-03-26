@@ -11,10 +11,11 @@ interface ChatPanelProps {
 }
 
 const promptChips = [
-  { icon: Code, text: 'Create SwiftUI app', prompt: 'Create a complete SwiftUI app with ContentView' },
-  { icon: Package, text: 'Add widget', prompt: 'Add a home screen widget to this app' },
-  { icon: Activity, text: 'Live Activity', prompt: 'Add Live Activities support with ActivityKit' },
-  { icon: Smartphone, text: 'Dynamic Island', prompt: 'Add Dynamic Island support' }
+  { icon: Code, text: 'Create SwiftUI app', prompt: 'Create a complete SwiftUI app with ContentView using modern iOS 26 design patterns' },
+  { icon: Package, text: 'Add widget', prompt: 'Add a home screen widget with Apple Intelligence integration' },
+  { icon: Activity, text: 'Live Activity', prompt: 'Add Live Activities support with ActivityKit and Dynamic Island' },
+  { icon: Smartphone, text: 'Dynamic Island', prompt: 'Create an interactive Dynamic Island experience with liquid glass effects' },
+  { icon: Sparkles, text: 'Apple Intelligence', prompt: 'Integrate Apple Intelligence features with liquid glass UI design' }
 ]
 
 export default function ChatPanel({ project, onProjectUpdate, onFileUpdate }: ChatPanelProps) {
@@ -124,7 +125,7 @@ export default function ChatPanel({ project, onProjectUpdate, onFileUpdate }: Ch
             </p>
             
             {/* Prompt Chips */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2 max-w-xs mx-auto">
               {promptChips.map((chip, index) => (
                 <button
                   key={index}

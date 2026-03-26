@@ -169,11 +169,13 @@ export default function iPhonePreview({ files, isDarkMode }: iPhonePreviewProps)
       {/* iPhone Frame */}
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="relative">
-          {/* iPhone 16 Pro Frame */}
+          {/* iPhone 16 Pro Frame with Dynamic Island */}
           <div className="w-80 h-[680px] bg-black rounded-[40px] p-2 shadow-2xl">
             <div className="w-full h-full bg-white dark:bg-black rounded-[32px] overflow-hidden relative">
-              {/* Notch */}
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-48 h-7 bg-black rounded-b-2xl z-10"></div>
+              {/* Dynamic Island - replacing notch */}
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-8 bg-black rounded-full z-10 flex items-center justify-center">
+                <div className="w-20 h-6 bg-gray-900 rounded-full"></div>
+              </div>
               
               {/* Screen Content */}
               <div className="w-full h-full">
@@ -209,7 +211,7 @@ export default function iPhonePreview({ files, isDarkMode }: iPhonePreviewProps)
       <div className="p-3 border-t border-gray-800">
         <div className="text-xs text-gray-400 text-center">
           <p>iPhone 16 Pro Simulator</p>
-          <p className="mt-1">iOS 17.0+ • SwiftUI Preview • {showDynamicIsland ? 'Dynamic Island ON' : 'Dynamic Island OFF'}</p>
+          <p className="mt-1">iOS 26.0 • SwiftUI Preview • {showDynamicIsland ? 'Dynamic Island ON' : 'Dynamic Island OFF'}</p>
         </div>
       </div>
     </div>
