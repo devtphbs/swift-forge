@@ -109,9 +109,9 @@ export default function SwiftForgeLayout() {
           />
         </div>
       ) : (
-        <div className="flex h-[calc(100vh-60px)]">
+        <div className="flex h-[calc(100vh-60px)] flex-col lg:flex-row">
           {/* Left: Chat Panel */}
-          <div className="w-96 border-r border-gray-800 flex flex-col">
+          <div className="w-full lg:w-96 border-r border-gray-800 flex flex-col">
             <ChatPanel 
               project={project}
               onProjectUpdate={setProject}
@@ -130,7 +130,7 @@ export default function SwiftForgeLayout() {
           </div>
 
           {/* Right: iPhone Preview */}
-          <div className="w-96 flex flex-col">
+          <div className="w-full lg:w-96 flex flex-col">
             <IPhonePreview 
               files={project?.files || []}
               isDarkMode={isDarkMode}

@@ -172,11 +172,13 @@ export default function iPhonePreview({ files, isDarkMode }: iPhonePreviewProps)
           {/* iPhone 15 Pro Frame with Dynamic Island */}
           <div className="w-80 h-[680px] bg-black rounded-[40px] p-2 shadow-2xl">
             <div className="w-full h-full bg-white dark:bg-black rounded-[32px] overflow-hidden relative">
-              {/* Dynamic Island - realistic pill shape */}
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-36 h-8 bg-black rounded-full z-10 flex items-center justify-center shadow-lg">
+              {/* Dynamic Island - realistic pill shape with proper positioning */}
+              <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-36 h-8 bg-black rounded-full z-10 flex items-center justify-center shadow-lg">
                 <div className="flex items-center gap-1">
                   <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-                  <div className="w-16 h-5 bg-gray-900 rounded-full"></div>
+                  <div className="w-20 h-5 bg-gray-900 rounded-full flex items-center justify-center">
+                    <div className="w-16 h-4 bg-black rounded-full"></div>
+                  </div>
                   <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
                 </div>
               </div>
