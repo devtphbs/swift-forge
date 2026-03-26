@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { User } from '@supabase/supabase-js'
 import ChatPanel from './ChatPanel'
 import CodeEditor from './CodeEditor'
-import iPhonePreview from './iPhonePreview'
+import IPhonePreview from './iPhonePreview'
 import Auth from './Auth'
 import ProjectManager from './ProjectManager'
 import { Project, ProjectFile } from '@/types'
@@ -131,7 +131,7 @@ export default function SwiftForgeLayout() {
 
           {/* Right: iPhone Preview */}
           <div className="w-96 flex flex-col">
-            <iPhonePreview 
+            <IPhonePreview 
               files={project?.files || []}
               isDarkMode={isDarkMode}
             />
