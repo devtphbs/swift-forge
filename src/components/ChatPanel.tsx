@@ -11,11 +11,11 @@ interface ChatPanelProps {
 }
 
 const promptChips = [
-  { icon: Code, text: 'Create SwiftUI app', prompt: 'Create a complete SwiftUI app with ContentView using modern iOS 26 design patterns' },
-  { icon: Package, text: 'Add widget', prompt: 'Add a home screen widget with Apple Intelligence integration' },
-  { icon: Activity, text: 'Live Activity', prompt: 'Add Live Activities support with ActivityKit and Dynamic Island' },
-  { icon: Smartphone, text: 'Dynamic Island', prompt: 'Create an interactive Dynamic Island experience with liquid glass effects' },
-  { icon: Sparkles, text: 'Apple Intelligence', prompt: 'Integrate Apple Intelligence features with liquid glass UI design' }
+  { icon: Code, text: 'Create App', prompt: 'Create a SwiftUI app with modern design and animations' },
+  { icon: Package, text: 'Custom Button', prompt: 'Create a modern button with liquid glass effects and animations' },
+  { icon: Activity, text: 'Task Manager', prompt: 'Create a complete task management app with SwiftData' },
+  { icon: Smartphone, text: 'Dynamic Island', prompt: 'Create an interactive Dynamic Island experience' },
+  { icon: Sparkles, text: 'Apple Intelligence', prompt: 'Integrate Apple Intelligence features with modern UI' }
 ]
 
 export default function ChatPanel({ project, onProjectUpdate, onFileUpdate }: ChatPanelProps) {

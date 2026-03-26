@@ -3,7 +3,22 @@ import { NextRequest, NextResponse } from 'next/server'
 const REQUESTY_API_URL = 'https://router.requesty.ai/v1/messages'
 const REQUESTY_API_KEY = process.env.REQUESTY_API_KEY
 
-const SYSTEM_PROMPT = `You are an expert iOS/SwiftUI engineer. Create complete, compilable SwiftUI code with proper imports and modern design patterns.`
+const SYSTEM_PROMPT = `You are SwiftForge AI, an expert iOS/SwiftUI development assistant that works like Lovable. You should:
+
+1. **Understand the user's request** and explain what you're going to build
+2. **Tell them what you're doing** step by step in a conversational way
+3. **Generate complete, production-ready SwiftUI code** with proper imports
+4. **Create multiple files when needed** and clearly indicate filenames
+5. **Use modern SwiftUI patterns** with animations, proper layout, and Apple design guidelines
+6. **Be conversational and helpful** - explain your choices and suggest improvements
+
+Your response format should be:
+1. Brief explanation of what you understand and what you'll build
+2. Step-by-step of what you're creating
+3. Complete SwiftUI code blocks with proper filenames
+4. Any additional notes or suggestions
+
+Always generate real, compilable SwiftUI code that follows best practices. Include proper imports, state management, and modern iOS design patterns.`
 
 export async function POST(request: NextRequest) {
   let message = ''
@@ -37,7 +52,7 @@ export async function POST(request: NextRequest) {
     ]
 
     const requestBody = {
-        model: 'anthropic/claude-sonnet-4-20250514',
+        model: 'anthropic/claude-3-5-sonnet-20241022',
         max_tokens: 4000,
         temperature: 0.7,
         messages
@@ -89,16 +104,28 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Chat API error:', error)
     
-    // Fallback response when Requesty API fails - generate actual SwiftUI code
+    // Fallback response when Requesty API fails - generate actual SwiftUI code with explanations
     const lowerMessage = message.toLowerCase()
     let generatedCode = ''
     let fileName = 'ContentView.swift'
+    let explanation = ''
+    let steps = []
     
     if (lowerMessage.includes('app') || lowerMessage.includes('create')) {
+      fileName = 'ContentView.swift'
+      explanation = "I'll create a beautiful SwiftUI app with animated gradients, liquid glass effects, and modern design patterns. This will be a complete, production-ready app that showcases modern iOS development."
+      steps = [
+        "Creating the main app structure with NavigationView",
+        "Adding animated gradient background with smooth transitions",
+        "Implementing liquid glass effect cards with .ultraThinMaterial",
+        "Building feature cards with proper spacing and shadows",
+        "Adding interactive elements and animations"
+      ]
       generatedCode = `import SwiftUI
 
 struct ContentView: View {
     @State private var animateGradient = false
+    @State private var selectedFeature: String? = nil
     
     var body: some View {
         NavigationView {
@@ -116,46 +143,81 @@ struct ContentView: View {
                     }
                 }
                 
-                VStack(spacing: 30) {
-                    Spacer()
-                    
-                    // App title with liquid glass effect
-                    VStack(spacing: 10) {
-                        Text("SwiftForge")
-                            .font(.system(size: 48, weight: .bold, design: .rounded))
-                            .foregroundStyle(
-                                LinearGradient(
-                                    colors: [.white, .blue.opacity(0.8)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 5)
+                ScrollView {
+                    VStack(spacing: 30) {
+                        Spacer(minLength: 50)
                         
-                        Text("AI-Powered iOS Development")
-                            .font(.title2)
-                            .fontWeight(.medium)
-                            .foregroundColor(.white.opacity(0.9))
+                        // App title with liquid glass effect
+                        VStack(spacing: 15) {
+                            Text("SwiftForge")
+                                .font(.system(size: 56, weight: .bold, design: .rounded))
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        colors: [.white, .blue.opacity(0.8)],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .shadow(color: .black.opacity(0.3), radius: 15, x: 0, y: 8)
+                            
+                            Text("AI-Powered iOS Development")
+                                .font(.title3)
+                                .fontWeight(.medium)
+                                .foregroundColor(.white.opacity(0.9))
+                                .multilineTextAlignment(.center)
+                        }
+                        .padding(35)
+                        .background(
+                            RoundedRectangle(cornerRadius: 25)
+                                .fill(.ultraThinMaterial)
+                                .shadow(color: .black.opacity(0.15), radius: 25, x: 0, y: 15)
+                        )
+                        .scaleEffect(selectedFeature == nil ? 1.0 : 0.95)
+                        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: selectedFeature)
+                        
+                        // Feature cards
+                        VStack(spacing: 20) {
+                            FeatureCard(
+                                icon: "brain.head.profile",
+                                title: "AI Assistant",
+                                description: "Generate complete SwiftUI apps with intelligent code suggestions",
+                                isSelected: selectedFeature == "ai"
+                            ) {
+                                selectedFeature = selectedFeature == "ai" ? nil : "ai"
+                            }
+                            
+                            FeatureCard(
+                                icon: "iphone.radiowaves.left.and.right",
+                                title: "Live Preview",
+                                description: "See your app changes in real-time with instant feedback",
+                                isSelected: selectedFeature == "preview"
+                            ) {
+                                selectedFeature = selectedFeature == "preview" ? nil : "preview"
+                            }
+                            
+                            FeatureCard(
+                                icon: "gear.badge.checkmark",
+                                title: "Smart Export",
+                                description: "Build and deploy your apps with one-click optimization",
+                                isSelected: selectedFeature == "export"
+                            ) {
+                                selectedFeature = selectedFeature == "export" ? nil : "export"
+                            }
+                            
+                            FeatureCard(
+                                icon: "sparkles",
+                                title: "Liquid Glass UI",
+                                description: "Modern glassmorphism design with smooth animations",
+                                isSelected: selectedFeature == "glass"
+                            ) {
+                                selectedFeature = selectedFeature == "glass" ? nil : "glass"
+                            }
+                        }
+                        
+                        Spacer(minLength: 50)
                     }
-                    .padding(30)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.ultraThinMaterial)
-                            .shadow(color: .black.opacity(0.1), radius: 20, x: 0, y: 10)
-                    )
-                    
-                    Spacer()
-                    
-                    // Feature cards
-                    VStack(spacing: 15) {
-                        FeatureCard(icon: "brain", title: "AI Assistant", description: "Generate SwiftUI code with AI")
-                        FeatureCard(icon: "iphone", title: "Live Preview", description: "See your app in real-time")
-                        FeatureCard(icon: "gear", title: "Export", description: "Build and deploy your apps")
-                    }
-                    
-                    Spacer()
+                    .padding(.horizontal, 25)
                 }
-                .padding()
             }
             .navigationTitle("")
             .navigationBarHidden(true)
@@ -167,32 +229,56 @@ struct FeatureCard: View {
     let icon: String
     let title: String
     let description: String
+    let isSelected: Bool
+    let action: () -> Void
     
     var body: some View {
-        HStack(spacing: 15) {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundColor(.blue)
-                .frame(width: 30)
-            
-            VStack(alignment: .leading, spacing: 5) {
-                Text(title)
-                    .font(.headline)
-                    .fontWeight(.semibold)
+        Button(action: action) {
+            HStack(spacing: 20) {
+                // Icon with background
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: 60, height: 60)
+                        .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
+                    
+                    Image(systemName: icon)
+                        .font(.title2)
+                        .foregroundColor(.blue)
+                }
                 
-                Text(description)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                // Text content
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(title)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+                    
+                    Text(description)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(2)
+                }
+                
+                Spacer()
+                
+                // Selection indicator
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "chevron.right")
+                    .font(.title3)
+                    .foregroundColor(isSelected ? .blue : .secondary)
+                    .animation(.spring(response: 0.3), value: isSelected)
             }
-            
-            Spacer()
+            .padding(25)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(.regularMaterial)
+                    .shadow(color: .black.opacity(0.08), radius: isSelected ? 15 : 8, x: 0, y: isSelected ? 8 : 4)
+            )
+            .scaleEffect(isSelected ? 1.02 : 1.0)
+            .animation(.spring(response: 0.3, dampingFraction: 0.8), value: isSelected)
         }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 15)
-                .fill(.regularMaterial)
-                .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
-        )
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
@@ -200,66 +286,224 @@ struct FeatureCard: View {
     ContentView()
 }`
     } else if (lowerMessage.includes('button')) {
-      fileName = 'CustomButton.swift'
+      fileName = 'ModernButton.swift'
+      explanation = "I'll create a modern, animated SwiftUI button with liquid glass effects, gradient backgrounds, and smooth press animations. This button will be highly customizable and follow Apple's design guidelines."
+      steps = [
+        "Creating a customizable button struct with various styles",
+        "Adding gradient backgrounds with color transitions",
+        "Implementing press animations with spring physics",
+        "Adding haptic feedback and liquid glass effects",
+        "Creating multiple button variants (primary, secondary, destructive)"
+      ]
       generatedCode = `import SwiftUI
 
-struct CustomButton: View {
+// MARK: - Button Styles
+enum ButtonStyle {
+    case primary
+    case secondary
+    case destructive
+    case glass
+    
+    var colors: [Color] {
+        switch self {
+        case .primary:
+            return [.blue, .purple]
+        case .secondary:
+            return [.gray.opacity(0.8), .gray.opacity(0.6)]
+        case .destructive:
+            return [.red, .orange]
+        case .glass:
+            return [.white.opacity(0.3), .white.opacity(0.1)]
+        }
+    }
+    
+    var textColor: Color {
+        switch self {
+        case .primary, .destructive:
+            return .white
+        case .secondary:
+            return .primary
+        case .glass:
+            return .white
+        }
+    }
+}
+
+// MARK: - Modern Button
+struct ModernButton: View {
     let title: String
+    let style: ButtonStyle
     let action: () -> Void
     @State private var isPressed = false
+    @State private var isHovered = false
+    @State private var showRipple = false
     
     var body: some View {
         Button(action: {
+            // Haptic feedback
+            let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+            impactFeedback.impactOccurred()
+            
             action()
+            
+            // Ripple effect
+            withAnimation(.easeOut(duration: 0.6)) {
+                showRipple = true
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                showRipple = false
+            }
         }) {
-            Text(title)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundColor(.white)
-                .padding(.horizontal, 30)
-                .padding(.vertical, 15)
-                .background(
-                    LinearGradient(
-                        colors: isPressed ? [.blue.opacity(0.8), .purple.opacity(0.8)] : [.blue, .purple],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
+            ZStack {
+                // Background gradient
+                LinearGradient(
+                    colors: style.colors,
+                    startPoint: isPressed ? .bottom : .top,
+                    endPoint: isPressed ? .top : .bottom
                 )
-                .cornerRadius(25)
-                .shadow(color: .blue.opacity(0.3), radius: isPressed ? 5 : 15, x: 0, y: isPressed ? 2 : 8)
-                .scaleEffect(isPressed ? 0.95 : 1.0)
-                .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
+                .overlay(
+                    // Glass effect for glass style
+                    style == .glass ? RoundedRectangle(cornerRadius: 25)
+                        .fill(.ultraThinMaterial) : nil
+                )
+                
+                // Ripple effect
+                if showRipple {
+                    Circle()
+                        .fill(.white.opacity(0.3))
+                        .scaleEffect(showRipple ? 1.5 : 0)
+                        .opacity(showRipple ? 0 : 1)
+                        .animation(.easeOut(duration: 0.6), value: showRipple)
+                }
+                
+                // Content
+                HStack(spacing: 12) {
+                    Text(title)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(style.textColor)
+                    
+                    if style == .primary {
+                        Image(systemName: "arrow.right")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(style.textColor)
+                            .offset(x: isPressed ? 5 : 0)
+                    }
+                }
+                .padding(.horizontal, 30)
+                .padding(.vertical, 18)
+            }
+            .frame(maxWidth: .infinity)
+            .background(
+                RoundedRectangle(cornerRadius: 25)
+                    .fill(.clear)
+                    .shadow(
+                        color: style.colors.first?.opacity(0.3) ?? .clear,
+                        radius: isPressed ? 8 : 20,
+                        x: 0,
+                        y: isPressed ? 4 : 10
+                    )
+            )
+            .scaleEffect(isPressed ? 0.96 : 1.0)
+            .rotation3DEffect(
+                .degrees(isPressed ? 5 : 0),
+                axis: (x: 1, y: 0, z: 0)
+            )
+            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isPressed)
+            .animation(.spring(response: 0.4, dampingFraction: 0.8), value: isHovered)
         }
         .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity) { pressing in
-            if pressing {
-                isPressed = true
-            } else {
-                isPressed = false
+            withAnimation(.easeInOut(duration: 0.1)) {
+                isPressed = pressing
             }
         }
     }
 }
 
+// MARK: - Button Variants
+struct PrimaryButton: View {
+    let title: String
+    let action: () -> Void
+    
+    var body: some View {
+        ModernButton(title: title, style: .primary, action: action)
+    }
+}
+
+struct SecondaryButton: View {
+    let title: String
+    let action: () -> Void
+    
+    var body: some View {
+        ModernButton(title: title, style: .secondary, action: action)
+    }
+}
+
+struct GlassButton: View {
+    let title: String
+    let action: () -> Void
+    
+    var body: some View {
+        ModernButton(title: title, style: .glass, action: action)
+    }
+}
+
+// MARK: - Preview
 #Preview {
-    VStack(spacing: 20) {
-        CustomButton(title: "Get Started") {
-            print("Button tapped!")
+    VStack(spacing: 30) {
+        PrimaryButton(title: "Get Started") {
+            print("Primary button tapped!")
         }
         
-        CustomButton(title: "Learn More") {
-            print("Learn more tapped!")
+        SecondaryButton(title: "Learn More") {
+            print("Secondary button tapped!")
+        }
+        
+        GlassButton(title: "Glass Effect") {
+            print("Glass button tapped!")
         }
     }
+    .padding()
+    .background(
+        LinearGradient(
+            colors: [.purple, .blue],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    )
 }`
     } else if (lowerMessage.includes('list')) {
-      fileName = 'TaskList.swift'
+      fileName = 'TaskManager.swift'
+      explanation = "I'll create a comprehensive task management app with SwiftUI, featuring smooth animations, swipe gestures, priority levels, and a beautiful modern interface. This will include data persistence and full CRUD operations."
+      steps = [
+        "Creating Task data model with priority levels and completion status",
+        "Building the main task list with swipe-to-delete functionality",
+        "Implementing add/edit task sheets with proper form validation",
+        "Adding priority-based color coding and visual indicators",
+        "Creating smooth animations for all interactions"
+      ]
       generatedCode = `import SwiftUI
+import SwiftData
 
-struct Task: Identifiable, Codable {
-    let id = UUID()
+// MARK: - Data Models
+@Model
+class Task {
+    var id: UUID
     var title: String
-    var isCompleted: Bool = false
-    var priority: Priority = .medium
+    var isCompleted: Bool
+    var priority: Priority
+    var createdAt: Date
+    var completedAt: Date?
+    
+    init(title: String, priority: Priority = .medium) {
+        self.id = UUID()
+        self.title = title
+        self.isCompleted = false
+        self.priority = priority
+        self.createdAt = Date()
+    }
     
     enum Priority: String, CaseIterable, Codable {
         case low = "low"
@@ -273,220 +517,502 @@ struct Task: Identifiable, Codable {
             case .high: return .red
             }
         }
+        
+        var icon: String {
+            switch self {
+            case .low: return "flag.fill"
+            case .medium: return "flag.fill"
+            case .high: return "exclamationmark.triangle.fill"
+            }
+        }
     }
 }
 
-struct TaskList: View {
-    @State private var tasks: [Task] = []
-    @State private var newTaskTitle = ""
-    @State private var showingAddTask = false
+// MARK: - Main Task Manager
+struct TaskManager: View {
+    @Environment(\\.modelContext) private var modelContext
+    @Query(sort: \\Task.priority, order: .reverse) private var tasks: [Task]
+    @State private var showingAddSheet = false
+    @State private var selectedTask: Task?
+    @State private var searchText = ""
+    
+    var filteredTasks: [Task] {
+        if searchText.isEmpty {
+            return tasks
+        } else {
+            return tasks.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 0) {
-                // Header with gradient
-                HStack {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("My Tasks")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                        
-                        Text("\\(tasks.filter { $0.isCompleted }.count) of \\(tasks.count) completed")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        showingAddTask = true
-                    }) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(.blue)
-                    }
-                }
-                .padding()
-                .background(
-                    LinearGradient(
-                        colors: [.blue.opacity(0.1), .purple.opacity(0.1)],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
-                )
+                // Header with search
+                headerView
                 
                 // Task list
-                List {
-                    ForEach(tasks) { task in
-                        TaskRow(task: task) {
-                            updateTask(task)
-                        }
+                if filteredTasks.isEmpty {
+                    emptyStateView
+                } else {
+                    taskListView
+                }
+            }
+            .navigationTitle("Tasks")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingAddSheet = true
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
                     }
-                    .onDelete(perform: deleteTasks)
                 }
-                .listStyle(PlainListStyle())
             }
-            .navigationTitle("")
-            .navigationBarHidden(true)
-            .sheet(isPresented: $showingAddTask) {
-                AddTaskView { newTask in
-                    tasks.append(newTask)
-                }
+            .sheet(isPresented: $showingAddSheet) {
+                AddTaskView()
+            }
+            .sheet(item: $selectedTask) { task in
+                EditTaskView(task: task)
             }
         }
     }
     
-    private func updateTask(_ task: Task) {
-        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-            tasks[index] = task
-        }
-    }
-    
-    private func deleteTasks(offsets: IndexSet) {
-        tasks.remove(atOffsets: offsets)
-    }
-}
-
-struct TaskRow: View {
-    let task: Task
-    let onUpdate: (Task) -> Void
-    
-    var body: some View {
-        HStack(spacing: 15) {
-            Button(action: {
-                task.isCompleted.toggle()
-                onUpdate(task)
-            }) {
-                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                    .font(.title2)
-                    .foregroundColor(task.isCompleted ? .green : task.priority.color)
-            }
-            .buttonStyle(PlainButtonStyle())
-            
-            VStack(alignment: .leading, spacing: 5) {
-                Text(task.title)
-                    .font(.body)
-                    .fontWeight(.medium)
-                    .strikethrough(task.isCompleted)
-                    .foregroundColor(task.isCompleted ? .secondary : .primary)
+    private var headerView: some View {
+        VStack(spacing: 15) {
+            // Search bar
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(.secondary)
                 
-                HStack(spacing: 8) {
-                    Circle()
-                        .fill(task.priority.color)
-                        .frame(width: 8, height: 8)
-                    
-                    Text(task.priority.rawValue.capitalized)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
+                TextField("Search tasks...", text: $searchText)
+                    .textFieldStyle(PlainTextFieldStyle())
+                
+                if !searchText.isEmpty {
+                    Button {
+                        searchText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.secondary)
+                    }
                 }
+            }
+            .padding(15)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 15))
+            
+            // Stats
+            HStack(spacing: 20) {
+                StatItem(
+                    title: "Total",
+                    value: "\\(tasks.count)",
+                    color: .blue
+                )
+                
+                StatItem(
+                    title: "Completed",
+                    value: "\\(tasks.filter { $0.isCompleted }.count)",
+                    color: .green
+                )
+                
+                StatItem(
+                    title: "High Priority",
+                    value: "\\(tasks.filter { $0.priority == .high && !$0.isCompleted }.count)",
+                    color: .red
+                )
+            }
+        }
+        .padding(.horizontal)
+        .padding(.bottom, 10)
+    }
+    
+    private var emptyStateView: some View {
+        VStack(spacing: 20) {
+            Spacer()
+            
+            Image(systemName: "checkmark.circle")
+                .font(.system(size: 80))
+                .foregroundColor(.secondary.opacity(0.3))
+            
+            VStack(spacing: 10) {
+                Text("No Tasks Yet")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                
+                Text("Tap the + button to add your first task")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
             }
             
             Spacer()
         }
-        .padding(.vertical, 8)
-        .background(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(.regularMaterial)
-                .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
-        )
+        .padding()
+    }
+    
+    private var taskListView: some View {
+        List {
+            ForEach(filteredTasks) { task in
+                TaskRow(task: task) {
+                    selectedTask = task
+                }
+            }
+            .onDelete(perform: deleteTasks)
+        }
+        .listStyle(PlainListStyle())
+    }
+    
+    private func deleteTasks(offsets: IndexSet) {
+        withAnimation {
+            for index in offsets {
+                modelContext.delete(filteredTasks[index])
+            }
+        }
     }
 }
 
-struct AddTaskView: View {
-    @Environment(\\.dismiss) private var dismiss
-    @State private var title = ""
-    let onAdd: (Task) -> Void
+// MARK: - Task Row
+struct TaskRow: View {
+    let task: Task
+    let onTap: () -> Void
     
     var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                TextField("Task title", text: $title)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
+        Button(action: onTap) {
+            HStack(spacing: 15) {
+                // Completion button
+                Button {
+                    withAnimation(.spring(response: 0.3)) {
+                        task.isCompleted.toggle()
+                        if task.isCompleted {
+                            task.completedAt = Date()
+                        } else {
+                            task.completedAt = nil
+                        }
+                    }
+                } label: {
+                    ZStack {
+                        Circle()
+                            .fill(task.isCompleted ? task.priority.color : .clear)
+                            .frame(width: 24, height: 24)
+                            .overlay(
+                                Circle()
+                                    .stroke(task.priority.color, lineWidth: 2)
+                            )
+                        
+                        if task.isCompleted {
+                            Image(systemName: "checkmark")
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                        }
+                    }
+                }
+                .buttonStyle(PlainButtonStyle())
+                
+                // Task content
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(task.title)
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .strikethrough(task.isCompleted)
+                        .foregroundColor(task.isCompleted ? .secondary : .primary)
+                        .multilineTextAlignment(.leading)
+                    
+                    HStack(spacing: 8) {
+                        Image(systemName: task.priority.icon)
+                            .font(.caption2)
+                            .foregroundColor(task.priority.color)
+                        
+                        Text(task.priority.rawValue.capitalized)
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        
+                        Spacer()
+                        
+                        if let completedAt = task.completedAt {
+                            Text("Completed \\(completedAt, style: .relative) ago")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
                 
                 Spacer()
-                
-                Button(action: {
-                    if !title.isEmpty {
-                        let newTask = Task(title: title)
-                        onAdd(newTask)
-                        dismiss()
+            }
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(.regularMaterial)
+                    .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
+            )
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+// MARK: - Stats View
+struct StatItem: View {
+    let title: String
+    let value: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 5) {
+            Text(value)
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundColor(color)
+            
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+// MARK: - Add Task View
+struct AddTaskView: View {
+    @Environment(\\.dismiss) private var dismiss
+    @Environment(\\.modelContext) private var modelContext
+    @State private var title = ""
+    @State private var priority: Task.Priority = .medium
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section(header: Text("Task Details")) {
+                    TextField("Task title", text: $title)
+                    
+                    Picker("Priority", selection: $priority) {
+                        ForEach(Task.Priority.allCases, id: \\.self) { priority in
+                            HStack {
+                                Image(systemName: priority.icon)
+                                    .foregroundColor(priority.color)
+                                Text(priority.rawValue.capitalized)
+                            }
+                            .tag(priority)
+                        }
                     }
-                }) {
-                    Text("Add Task")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(title.isEmpty ? Color.gray : Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                    .pickerStyle(SegmentedPickerStyle())
                 }
-                .disabled(title.isEmpty)
-                .padding()
             }
             .navigationTitle("New Task")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Add") {
+                        let task = Task(title: title, priority: priority)
+                        modelContext.insert(task)
+                        dismiss()
+                    }
+                    .disabled(title.isEmpty)
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Edit Task View
+struct EditTaskView: View {
+    @Environment(\\.dismiss) private var dismiss
+    @Bindable var task: Task
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section(header: Text("Task Details")) {
+                    TextField("Task title", text: $task.title)
+                    
+                    Picker("Priority", selection: $task.priority) {
+                        ForEach(Task.Priority.allCases, id: \\.self) { priority in
+                            HStack {
+                                Image(systemName: priority.icon)
+                                    .foregroundColor(priority.color)
+                                Text(priority.rawValue.capitalized)
+                            }
+                            .tag(priority)
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    
+                    Toggle("Completed", isOn: $task.isCompleted)
+                }
+            }
+            .navigationTitle("Edit Task")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
         }
     }
 }
 
 #Preview {
-    TaskList()
+    TaskManager()
 }`
     } else {
       // Default response for other requests
+      fileName = 'ContentView.swift'
+      explanation = "I'll create a modern SwiftUI interface with interactive elements, animations, and a clean design. This will showcase various SwiftUI components and best practices."
+      steps = [
+        "Setting up the main view structure with proper state management",
+        "Adding interactive elements with smooth animations",
+        "Implementing modern design patterns with gradients and materials",
+        "Creating responsive layout that works on all screen sizes"
+      ]
       generatedCode = `import SwiftUI
 
 struct ContentView: View {
     @State private var counter = 0
+    @State private var animateGradient = false
+    @State private var showDetail = false
     
     var body: some View {
-        VStack(spacing: 30) {
-            Text("SwiftForge")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [.blue, .purple],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
+        NavigationView {
+            ZStack {
+                // Animated gradient background
+                LinearGradient(
+                    colors: animateGradient ? [.blue, .purple, .pink] : [.purple, .blue, .cyan],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
                 )
-            
-            Text("Build amazing iOS apps")
-                .font(.title2)
-                .foregroundColor(.secondary)
-            
-            HStack(spacing: 20) {
-                Button(action: {
-                    counter -= 1
-                }) {
-                    Image(systemName: "minus.circle.fill")
-                        .font(.largeTitle)
-                        .foregroundColor(.red)
+                .ignoresSafeArea()
+                .onAppear {
+                    withAnimation(.easeInOut(duration: 4).repeatForever(autoreverses: true)) {
+                        animateGradient.toggle()
+                    }
                 }
                 
-                Text("\\(counter)")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .frame(minWidth: 60)
-                
-                Button(action: {
-                    counter += 1
-                }) {
-                    Image(systemName: "plus.circle.fill")
-                        .font(.largeTitle)
-                        .foregroundColor(.green)
+                ScrollView {
+                    VStack(spacing: 40) {
+                        Spacer(minLength: 60)
+                        
+                        // Main content card
+                        VStack(spacing: 30) {
+                            Text("SwiftForge")
+                                .font(.system(size: 48, weight: .bold, design: .rounded))
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        colors: [.white, .blue.opacity(0.8)],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .shadow(color: .black.opacity(0.3), radius: 15, x: 0, y: 8)
+                            
+                            Text("Build amazing iOS apps with AI")
+                                .font(.title2)
+                                .foregroundColor(.white.opacity(0.9))
+                                .multilineTextAlignment(.center)
+                            
+                            // Interactive counter
+                            VStack(spacing: 20) {
+                                Text("\\(counter)")
+                                    .font(.system(size: 72, weight: .bold, design: .rounded))
+                                    .foregroundColor(.white)
+                                    .contentTransition(.numericText())
+                                
+                                HStack(spacing: 30) {
+                                    Button(action: {
+                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                            counter -= 1
+                                        }
+                                    }) {
+                                        Image(systemName: "minus.circle.fill")
+                                            .font(.largeTitle)
+                                            .foregroundColor(.white.opacity(0.8))
+                                            .scaleEffect(counter > 0 ? 1.0 : 0.8)
+                                    }
+                                    .disabled(counter <= 0)
+                                    
+                                    Button(action: {
+                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                            counter += 1
+                                        }
+                                    }) {
+                                        Image(systemName: "plus.circle.fill")
+                                            .font(.largeTitle)
+                                            .foregroundColor(.white)
+                                    }
+                                }
+                            }
+                            .padding(30)
+                            .background(
+                                RoundedRectangle(cornerRadius: 25)
+                                    .fill(.ultraThinMaterial)
+                                    .shadow(color: .black.opacity(0.2), radius: 20, x: 0, y: 10)
+                            )
+                            
+                            // Action button
+                            Button(action: {
+                                withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+                                    showDetail.toggle()
+                                }
+                            }) {
+                                HStack {
+                                    Text(showDetail ? "Hide Details" : "Show Details")
+                                    Image(systemName: showDetail ? "chevron.up" : "chevron.down")
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(
+                                    LinearGradient(
+                                        colors: showDetail ? [.purple, .blue] : [.blue, .purple],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .foregroundColor(.white)
+                                .cornerRadius(15)
+                                .shadow(color: .blue.opacity(0.4), radius: 15, x: 0, y: 8)
+                            }
+                            
+                            // Detail view
+                            if showDetail {
+                                VStack(spacing: 15) {
+                                    Text("About SwiftForge")
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                    
+                                    Text("SwiftForge is an AI-powered iOS development platform that helps you create beautiful, functional apps with modern SwiftUI patterns and best practices.")
+                                        .font(.body)
+                                        .foregroundColor(.white.opacity(0.8))
+                                        .multilineTextAlignment(.center)
+                                        .padding(.horizontal)
+                                }
+                                .padding(25)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(.regularMaterial)
+                                        .shadow(color: .black.opacity(0.1), radius: 15, x: 0, y: 8)
+                                )
+                                .transition(.asymmetric(
+                                    insertion: .scale.combined(with: .opacity),
+                                    removal: .scale.combined(with: .opacity)
+                                ))
+                            }
+                        }
+                        
+                        Spacer(minLength: 60)
+                    }
+                    .padding(.horizontal, 25)
                 }
             }
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 15)
-                    .fill(.regularMaterial)
-                    .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
-            )
+            .navigationTitle("")
+            .navigationBarHidden(true)
         }
-        .padding()
-        .navigationTitle("SwiftForge")
     }
 }
 
@@ -506,13 +1032,22 @@ struct ContentView: View {
       updated_at: new Date().toISOString()
     }]
     
-    const fallbackResponse = `I've generated a complete SwiftUI file for you: **${fileName}**
+    // Build conversational response like Lovable
+    const stepsText = steps.map((step, index) => `${index + 1}. ${step}`).join('\\n')
+    
+    const fallbackResponse = `${explanation}
+
+**Here's what I'm creating:**
+
+${stepsText}
+
+**📁 Generated File: \`${fileName}\`**
 
 \`\`\`swift
 ${generatedCode}
 \`\`\`
 
-This file has been automatically added to your project. The code includes modern SwiftUI patterns, animations, and follows Apple's design guidelines. You can customize it further based on your specific requirements!`
+✨ **File added to your project!** The code includes modern SwiftUI patterns, smooth animations, and follows Apple's design guidelines. You can customize it further based on your needs!`
 
     return NextResponse.json({
       success: true,
